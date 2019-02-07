@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
   console.warn(state)
   return {
-    appData: state.greeting
+    greeting: state.greeting
   }
 }
 

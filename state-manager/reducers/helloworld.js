@@ -10,7 +10,7 @@ export default function sayHelloWorld(state = initialState, action){
         case HELLOWORLD:
          return {
              ...state,
-             ...action.talk
+             ...action.data
          }
             break;
         default:

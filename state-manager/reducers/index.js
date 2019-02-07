@@ -3,7 +3,7 @@ import HelloWorldReducer from "./helloworld"
 
 
 const rootReducer = combineReducers({
-    HelloWorldReducer
+   HelloWorldReducer
 })
 
 export default rootReducer;
