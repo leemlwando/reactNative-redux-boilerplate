@@ -8,10 +8,11 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import {connect} from "react-redux";
 import MainAction from "./state-manager/actions";
-import ConfigurePush from "./notifications/push"
+import appConfig from "./app.json";
+import NotifService from "./notifications/push";
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -20,8 +21,18 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-ConfigurePush()
+
  class App extends Component<Props> {
+     
+    constructor(props) {
+        super(props);
+
+            this.notif = new NotifService(this.onRegister, this.onNotif);
+                // setInterval(this.notif.localNotif,1000)
+                console.warn("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+                // this.notif.localNotif()
+        }
+  
   render() {
     return (
       <View style={styles.container}>
@@ -31,7 +42,26 @@ ConfigurePush()
       </View>
     );
   }
+
+  onRegister(token) {
+    Alert.alert("Registered !", JSON.stringify(token));
+    console.warn(token);
+    // this.setState({ registerToken: token.token, gcmRegistered: true });
+  }
+
+  onNotif(notif) {
+    console.warn(notif);
+    Alert.alert(notif.title, notif.message);
+  }
+
+  handlePerm(perms) {
+    Alert.alert("Permissions", JSON.stringify(perms));
+  }
+
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
