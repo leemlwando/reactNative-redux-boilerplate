@@ -10,8 +10,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
 import {connect} from "react-redux";
-import MainAction from "./state-manager/actions";
-import appConfig from "./app.json";
+import {startFetchingToken,errorFetchingToken,successFetchingToken,failedFetchingToken,stopFetchingToken} from "./state-manager/actions/push";
 import NotifService from "./notifications/push";
 
 const instructions = Platform.select({
@@ -24,14 +23,13 @@ const instructions = Platform.select({
 
  class App extends Component<Props> {
      
-    constructor(props) {
-        super(props);
-
-            this.notif = new NotifService(this.onRegister, this.onNotif);
-                // setInterval(this.notif.localNotif,1000)
-                console.warn("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-                // this.notif.localNotif()
+    async componentDidMount(){
+        try {
+             this.notif = await new NotifService(this.onRegister, this.onNotif);
+        } catch (error) {
+          console.warn(error)
         }
+    }
   
   render() {
     return (
@@ -88,14 +86,39 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
   console.warn(state)
   return {
-    greeting: state.greeting
+    greeting: state.greeting,
+      //token registration
+    senderID: state.push.senderID,
+    registrationToken: state.push.registrationToken,
+    fcmRegistred: state.push.fcmRegistred,
+      //store notifications
+    notifications: state.push.notifications,
+      //fetch token device
+    fetch_token_start: state.push.fetch_token_start,
+    fetch_token_error: state.push.fetch_token_error,
+    fetch_token_success: state.push.fetch_token_success,
+    fetch_token_message: state.push.fetch_token_message,
+    fetch_token_failure: state.push.fetch_token_failure,
+    fetch_token_stop: state.push.fetch_token_stop,
+        //sending token to server
+    send_token_to_server_start: state.push.send_token_to_server_start,
+    send_token_to_server_error: state.push.send_token_to_server_error,
+    send_token_to_server_success: state.push.send_token_to_server_success,
+    send_token_to_server_failure: state.push.send_token_to_server_failure,
+    send_token_to_server_stop: state.push.send_token_to_server_stop,
+    send_token_to_server_message: state.push.send_token_to_server_message
   }
 }
 
 function mapDispatchToProps (dispatch) {
  
   return {
-    greet: () => dispatch(MainAction())
+    greet: () => dispatch(MainAction()),
+    startFetchingToken:(payload)=>dispatch(startFetchingToken(payload)),
+    errorFetchingToken: (payload)=>dispatch(errorFetchingToken(payload)),
+    successFetchingToken: (payload)=>dispatch(successFetchingToken(payload)),
+    failedFetchingToken: (payload)=>dispatch(failedFetchingToken(payload)),
+    stopFetchingToken: (payload) => dispatch(stopFetchingToken(payload))
   }
 }
 
